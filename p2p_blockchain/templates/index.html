@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Blockchain Network</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      background-color: #f8f9fa;
+    }
+    h1 {
+      font-weight: bold;
+    }
+    .block {
+      border: 1px solid #dee2e6;
+      border-radius: 5px;
+      padding: 15px;
+      margin-bottom: 10px;
+      background-color: #fff;
+    }
+    pre {
+      background-color: #f1f1f1;
+      padding: 10px;
+      border-radius: 5px;
+      overflow-x: auto;
+    }
+  </style>
+</head>
+<body>
+  <div class="container py-4">
+    <h1 class="mb-4">🚀 P2P Blockchain Network</h1>
+
+    <div class="row">
+      <div class="col-md-6">
+        <h3>Add Transaction</h3>
+        <form method="POST" action="/transactions/new">
+          <div class="mb-3">
+            <label class="form-label">Sender</label>
+            <input type="text" name="sender" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Recipient</label>
+            <input type="text" name="recipient" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Amount</label>
+            <input type="number" name="amount" class="form-control" required>
+          </div>
+          <button class="btn btn-success" type="submit">Submit Transaction</button>
+        </form>
+      </div>
+
+      <div class="col-md-6">
+        <h3>Node Operations</h3>
+        <form method="POST" action="/nodes/register">
+          <div class="mb-3">
+            <label class="form-label">Register Nodes</label>
+            <input type="text" name="nodes" class="form-control" placeholder="e.g. 127.0.0.1:5001,127.0.0.1:5002" required>
+          </div>
+          <button class="btn btn-primary" type="submit">Register Nodes</button>
+        </form>
+        <br>
+        <a href="/mine" class="btn btn-warning me-2">Mine Block</a>
+        <a href="/nodes/resolve" class="btn btn-info me-2">Resolve Conflicts</a>
+      </div>
+    </div>
+
+    <hr class="my-4">
+
+    <h3>Current Blockchain</h3>
+    {% for block in chain %}
+      <div class="block">
+        <h5>Block #{{ block.index }}</h5>
+        <p><strong>Timestamp:</strong> {{ block.timestamp }}</p>
+        <p><strong>Proof:</strong> {{ block.proof }}</p>
+        <p><strong>Previous Hash:</strong> {{ block.previous_hash }}</p>
+        <h6>Transactions:</h6>
+        {% if block.transactions %}
+          <ul>
+          {% for tx in block.transactions %}
+            <li><strong>{{ tx.sender }}</strong> → <strong>{{ tx.recipient }}</strong> : {{ tx.amount }}</li>
+          {% endfor %}
+          </ul>
+        {% else %}
+          <p>No transactions in this block.</p>
+        {% endif %}
+      </div>
+    {% endfor %}
+
+    <div class="text-muted mt-4">
+      <p>This is a simulation of a peer-to-peer blockchain network for educational purposes.</p>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>P2P Blockchain Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <style>
+    body {
+      background: #f1f3f5;
+    }
+    .block-card {
+      border-radius: 15px;
+      color: white;
+      padding: 20px;
+      margin: 15px;
+      flex: 1 0 300px;
+    }
+    .genesis { background: linear-gradient(135deg, #ff758c, #ff7eb3); }
+    .block { background: linear-gradient(135deg, #6a11cb, #2575fc); }
+    .transaction {
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 8px;
+      padding: 8px;
+      margin-top: 8px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container py-4">
+    <h1 class="text-center mb-4">📊 Blockchain Visualization</h1>
+
+    <div class="d-flex flex-wrap justify-content-center">
+      {% for block in chain %}
+        <div class="block-card {{ 'genesis' if block.index == 1 else 'block' }}">
+          <h4>🔷 {{ 'Genesis Block' if block.index == 1 else 'Block #' ~ block.index }}</h4>
+          <p><strong>Timestamp:</strong> {{ block.timestamp }}</p>
+          <p><strong>Proof:</strong> {{ block.proof }}</p>
+          <p><strong>Previous Hash:</strong><br> {{ block.previous_hash }}</p>
+
+          <h5 class="mt-3">Transactions ({{ block.transactions|length }}):</h5>
+          {% if block.transactions %}
+            {% for tx in block.transactions %}
+              <div class="transaction">
+                <strong>{{ tx.sender }}</strong> ➡ <strong>{{ tx.recipient }}</strong><br>
+                Amount: {{ tx.amount }}
+              </div>
+            {% endfor %}
+          {% else %}
+            <p class="text-light">No transactions in this block.</p>
+          {% endif %}
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
